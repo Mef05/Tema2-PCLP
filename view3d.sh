@@ -10,7 +10,7 @@ fi
 source .venv/bin/activate
 
 # Run 3D viewer
-python3 scripts/view3d.py "$@"
+python3 /home/stef/Documents/tema2-schelet-v7/scripts/view3d.py "$@"
 
 # Deactivate the virtual environment
 deactivate
