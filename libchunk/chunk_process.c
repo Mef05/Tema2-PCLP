@@ -45,9 +45,10 @@ char*** chunk_shell(
                         int ny = y + base[i][1];
                         int nz = z + base[i][2];
 
-                        char shell = (target_block == shell_block)
-                                         ? MAGIC_BLOCK
-                                         : shell_block;
+                        char shell = shell_block;
+                        if (target_block == shell_block) {
+                            shell = MAGIC_BLOCK;
+                        }
                         flag = (target_block == shell_block) ? 1 : 0;
 
                         if (nx >= 0 && nx < width && ny >= 0 && ny < height
