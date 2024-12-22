@@ -1,0 +1,321 @@
+==89666== Memcheck, a memory error detector
+==89666== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==89666== Using Valgrind-3.22.0-bd4db67b1d-20231031 and LibVEX; rerun with -h for copyright info
+==89666== Command: ./main
+==89666== Parent PID: 85471
+==89666== 
+--89666-- 
+--89666-- Valgrind options:
+--89666--    --leak-check=full
+--89666--    --show-leak-kinds=all
+--89666--    --track-origins=yes
+--89666--    --verbose
+--89666--    --log-file=valgrind-out.txt
+--89666-- Contents of /proc/version:
+--89666--   Linux version 6.8.0-50-generic (buildd@lcy02-amd64-020) (x86_64-linux-gnu-gcc-13 (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0, GNU ld (GNU Binutils for Ubuntu) 2.42) #51-Ubuntu SMP PREEMPT_DYNAMIC Sat Nov  9 17:58:29 UTC 2024
+--89666-- 
+--89666-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-ssse3-avx-avx2-bmi-f16c-rdrand-rdseed
+--89666-- Page sizes: currently 4096, max supported 4096
+--89666-- Valgrind library directory: /usr/libexec/valgrind
+--89666-- Reading syms from /home/stef/Documents/tema2-schelet-v7/src/main
+--89666-- Reading syms from /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+--89666--   Considering /usr/lib/debug/.build-id/35/3e1b6cb0eebc08cf3ff812eae8a51b4efd684e.debug ..
+--89666--   .. build-id is valid
+--89666-- Reading syms from /usr/libexec/valgrind/memcheck-amd64-linux
+--89666--    object doesn't have a dynamic symbol table
+--89666-- Scheduler: using generic scheduler lock implementation.
+--89666-- Reading suppressions file: /usr/libexec/valgrind/default.supp
+==89666== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-89666-by-stef-on-???
+==89666== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-89666-by-stef-on-???
+==89666== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-89666-by-stef-on-???
+==89666== 
+==89666== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==89666== don't want to do, unless you know exactly what you're doing,
+==89666== or are doing some strange experiment):
+==89666==   /usr/bin/vgdb --pid=89666 ...command...
+==89666== 
+==89666== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==89666==   /path/to/gdb ./main
+==89666== and then give GDB the following command
+==89666==   target remote | /usr/bin/vgdb --pid=89666
+==89666== --pid is optional if only one valgrind process is running
+==89666== 
+--89666-- REDIR: 0x4028b00 (ld-linux-x86-64.so.2:strlen) redirected to 0x580c2e1a (???)
+--89666-- REDIR: 0x40272b0 (ld-linux-x86-64.so.2:index) redirected to 0x580c2e34 (???)
+--89666-- Reading syms from /usr/libexec/valgrind/vgpreload_core-amd64-linux.so
+--89666-- Reading syms from /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so
+==89666== WARNING: new redirection conflicts with existing -- ignoring it
+--89666--     old: 0x04028b00 (strlen              ) R-> (0000.0) 0x580c2e1a ???
+--89666--     new: 0x04028b00 (strlen              ) R-> (2007.0) 0x0484f340 strlen
+--89666-- REDIR: 0x40274e0 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4850460 (strcmp)
+--89666-- REDIR: 0x4026910 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4853cd0 (mempcpy)
+--89666-- Reading syms from /usr/lib/x86_64-linux-gnu/libm.so.6
+--89666-- Reading syms from /usr/lib/x86_64-linux-gnu/libc.so.6
+--89666--   Considering /usr/lib/debug/.build-id/6d/64b17fbac799e68da7ebd9985ddf9b5cb375e6.debug ..
+--89666--   .. build-id is valid
+--89666-- REDIR: 0x4028ca0 (ld-linux-x86-64.so.2:strncmp) redirected to 0x484fc90 (strncmp)
+--89666-- REDIR: 0x4a0a040 (libc.so.6:strnlen) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a0a0d0 (libc.so.6:strpbrk) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a08190 (libc.so.6:strcmp) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a213b0 (libc.so.6:wcsnlen) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a07280 (libc.so.6:memset) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a20b20 (libc.so.6:wcslen) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a8c3c0 (libc.so.6:__memcpy_chk) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a071f0 (libc.so.6:memrchr) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a21350 (libc.so.6:wcsncpy) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a06710 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a1f8e0 (libc.so.6:wcschr) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a08080 (libc.so.6:index) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a0a100 (libc.so.6:rindex) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a1f990 (libc.so.6:wcscmp) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a074a0 (libc.so.6:stpncpy) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a2deb0 (libc.so.6:wmemchr) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a09ee0 (libc.so.6:strncmp) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a07500 (libc.so.6:strcasecmp) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a09300 (libc.so.6:strcspn) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a208f0 (libc.so.6:wcscpy) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a08010 (libc.so.6:strcat) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a09de0 (libc.so.6:strncasecmp_l) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a08100 (libc.so.6:strchrnul) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a06620 (libc.so.6:bcmp) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a09290 (libc.so.6:strcpy) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a075a0 (libc.so.6:strcasecmp_l) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a09cb0 (libc.so.6:strlen) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a09f80 (libc.so.6:strncpy) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a2df30 (libc.so.6:wmemcmp) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a8c4e0 (libc.so.6:__memmove_chk) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+==89666== WARNING: new redirection conflicts with existing -- ignoring it
+--89666--     old: 0x04add9d0 (__memcpy_chk_avx_una) R-> (2030.0) 0x04853dd0 __memcpy_chk
+--89666--     new: 0x04add9d0 (__memcpy_chk_avx_una) R-> (2024.0) 0x04853740 __memmove_chk
+--89666-- REDIR: 0x4a07430 (libc.so.6:stpcpy) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a06fb0 (libc.so.6:memmove) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+==89666== Preferring higher priority redirection:
+--89666--     old: 0x04adda00 (__memcpy_avx_unalign) R-> (2018.0) 0x04851580 __memcpy_avx_unaligned_erms
+--89666--     new: 0x04adda00 (__memcpy_avx_unalign) R-> (2018.1) 0x04852d60 memmove
+--89666-- REDIR: 0x4a065a0 (libc.so.6:memchr) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a0a2d0 (libc.so.6:strspn) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a070d0 (libc.so.6:mempcpy) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4a09d40 (libc.so.6:strncasecmp) redirected to 0x483d1c0 (_vgnU_ifunc_wrapper)
+--89666-- REDIR: 0x4ae25f0 (libc.so.6:__strrchr_avx2) redirected to 0x484ed20 (rindex)
+--89666-- REDIR: 0x4a02640 (libc.so.6:malloc) redirected to 0x48467b0 (malloc)
+--89666-- REDIR: 0x4a03790 (libc.so.6:calloc) redirected to 0x484d8a0 (calloc)
+--89666-- REDIR: 0x4a03090 (libc.so.6:realloc) redirected to 0x484db00 (realloc)
+==89666== Conditional jump or move depends on uninitialised value(s)
+==89666==    at 0x10A569: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Uninitialised value was created by a heap allocation
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10AAEA: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Conditional jump or move depends on uninitialised value(s)
+==89666==    at 0x484DB24: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10A5A7: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Uninitialised value was created by a heap allocation
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10AAEA: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Conditional jump or move depends on uninitialised value(s)
+==89666==    at 0x484DB2D: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10A5A7: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Uninitialised value was created by a heap allocation
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10AAEA: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Use of uninitialised value of size 8
+==89666==    at 0x10A5FA: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Uninitialised value was created by a heap allocation
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10AAEA: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Invalid write of size 4
+==89666==    at 0x10A5FA: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Address 0x4b77fa0 is 0 bytes after a block of size 0 alloc'd
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10A5A7: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Invalid write of size 4
+==89666==    at 0x10A5FF: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Address 0x4b77fa4 is 4 bytes after a block of size 0 alloc'd
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10A5A7: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Invalid write of size 4
+==89666==    at 0x10A605: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Address 0x4b77fa8 is 8 bytes after a block of size 0 alloc'd
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10A5A7: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Conditional jump or move depends on uninitialised value(s)
+==89666==    at 0x10A569: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A86F: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Uninitialised value was created by a heap allocation
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10AAEA: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Use of uninitialised value of size 8
+==89666==    at 0x10A5FA: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A86F: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Uninitialised value was created by a heap allocation
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10AAEA: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Invalid write of size 4
+==89666==    at 0x10A5FA: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A86F: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Address 0x4b77fac is 12 bytes after a block of size 0 alloc'd
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10A5A7: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Invalid write of size 4
+==89666==    at 0x10A5FF: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A86F: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Address 0x4b77fb0 is 16 bytes after a block of size 0 alloc'd
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10A5A7: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Invalid write of size 4
+==89666==    at 0x10A605: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A86F: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Address 0x4b77fb4 is 20 bytes after a block of size 0 alloc'd
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10A5A7: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Conditional jump or move depends on uninitialised value(s)
+==89666==    at 0x10A569: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A86F: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A86F: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Uninitialised value was created by a heap allocation
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10AAEA: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Use of uninitialised value of size 8
+==89666==    at 0x10A5FA: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A86F: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A86F: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Uninitialised value was created by a heap allocation
+==89666==    at 0x484DB80: realloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==89666==    by 0x10AAEA: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666== 
+==89666== Invalid write of size 4
+==89666==    at 0x10A5FA: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A86F: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A86F: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==  Address 0x4b77fb8 is 24 bytes after a block of size 0 in arena "client"
+==89666== 
+
+valgrind: m_mallocfree.c:304 (get_bszB_as_is): Assertion 'bszB_lo == bszB_hi' failed.
+valgrind: Heap block lo/hi size mismatch: lo = 64, hi = 0.
+This is probably caused by your program erroneously writing past the
+end of a heap block and corrupting heap metadata.  If you fix any
+invalid writes reported by Memcheck, this assertion failure will
+probably go away.  Please try that before reporting this as a bug.
+
+
+host stacktrace:
+==89666==    at 0x58044A9A: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==89666==    by 0x58044BDF: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==89666==    by 0x58044D75: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==89666==    by 0x5804EDB8: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==89666==    by 0x5803CDCA: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==89666==    by 0x5803B3E7: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==89666==    by 0x5803FFD0: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==89666==    by 0x5803A260: ??? (in /usr/libexec/valgrind/memcheck-amd64-linux)
+==89666==    by 0x10092F3C20: ???
+==89666==    by 0x10091A9F0F: ???
+
+sched status:
+  running_tid=1
+
+Thread 1: status = VgTs_Runnable (lwpid 89666)
+==89666==    at 0x10A5FF: add_toBody (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A751: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A86F: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10A86F: flood_fill_body (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10ABA7: find_bodies (in /home/stef/Documents/tema2-schelet-v7/src/main)
+==89666==    by 0x10AF27: main (in /home/stef/Documents/tema2-schelet-v7/src/main)
+client stack range: [0x1FFEFFD000 0x1FFF000FFF] client SP: 0x1FFEFFF480
+valgrind stack range: [0x10090AA000 0x10091A9FFF] top usage: 18232 of 1048576
+
+
+Note: see also the FAQ in the source distribution.
+It contains workarounds to several common problems.
+In particular, if Valgrind aborted or crashed after
+identifying problems in your program, there's a good chance
+that fixing those problems will prevent Valgrind aborting or
+crashing, especially if it happened in m_mallocfree.c.
+
+If that doesn't help, please report this bug to: www.valgrind.org
+
+In the bug report, send all the above text, the valgrind
+version, and what OS and version you are using.  Thanks.
+

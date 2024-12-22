@@ -1,10 +1,16 @@
 #include <stdbool.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "chunk.h"
 
+#define OBJ_INIT_SIZE 16
 #define BASE_3D_SIZE 6
 
-void free_chunk(char*** chunk, int width, int height, int depth) {
+int is_in_bounds(int width, int height, int depth, int x, int y, int z) {
+    return x >= 0 && x < width && y >= 0 && y < height && z >= 0 && z < depth;
+}
+
+void free_chunk(char*** chunk, int width, int height) {
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
             free(chunk[x][y]);
@@ -16,10 +22,22 @@ void free_chunk(char*** chunk, int width, int height, int depth) {
 
 char*** calloc_chunk(int width, int height, int depth) {
     char*** chunk = (char***) calloc(width, sizeof(char**));
+    if (chunk == NULL) {
+        printf("Memory allocation chunk failed\n");
+        return NULL;
+    }
     for (int i = 0; i < width; i++) {
         chunk[i] = (char**) calloc(height, sizeof(char*));
+        if (chunk[i] == NULL) {
+            printf("Memory allocation chunk[%d] failed\n", i);
+            return NULL;
+        }
         for (int j = 0; j < height; j++) {
             chunk[i][j] = (char*) calloc(depth, sizeof(char));
+            if (chunk[i][j] == NULL) {
+                printf("Memory allocation chunk[%d][%d] failed\n", i, j);
+                return NULL;
+            }
         }
     }
 
@@ -37,188 +55,262 @@ char*** chunk_rotate_y(char*** chunk, int width, int height, int depth) {
         }
     }
 
-    free_chunk(chunk, width, height, depth);
+    free_chunk(chunk, width, height);
 
     return new_chunk;
 }
 
-// Structure to track body blocks
 typedef struct {
-    int* x;
-    int* y;
-    int* z;
+    int x;
+    int y;
+    int z;
+} Point3D;
+
+typedef struct {
+    Point3D* points;
     int size;
     int capacity;
+    bool fallable;
 } Body;
 
-// Initialize body structure
-Body* create_body(int initial_capacity) {
+Body* create_body() {
     Body* body = malloc(sizeof(Body));
-    body->x = malloc(initial_capacity * sizeof(int));
-    body->y = malloc(initial_capacity * sizeof(int));
-    body->z = malloc(initial_capacity * sizeof(int));
+    if (body == NULL) {
+        printf("Memory allocation body failed\n");
+        return NULL;
+    }
+
+    body->points = malloc(OBJ_INIT_SIZE * sizeof(Point3D));
+    if (body->points == NULL) {
+        printf("Memory allocation body->points failed\n");
+        free(body->points);
+        return NULL;
+    }
+
     body->size = 0;
-    body->capacity = initial_capacity;
+    body->capacity = OBJ_INIT_SIZE;
+    body->fallable = false;
+
     return body;
 }
 
-static bool
-    is_within_bounds(int x, int y, int z, int width, int height, int depth) {
-    return (x >= 0 && x < width && y >= 0 && y < height && z >= 0 && z < depth);
+void free_body(Body* body) {
+    free(body->points);
 }
 
-// Add block to body
-void add_to_body(Body* body, int x, int y, int z) {
-    if (body->size >= body->capacity) {
-        body->capacity *= 2;
-        body->x = realloc(body->x, body->capacity * sizeof(int));
-        body->y = realloc(body->y, body->capacity * sizeof(int));
-        body->z = realloc(body->z, body->capacity * sizeof(int));
+void free_body_array(Body* bodies, int body_count) {
+    for (int i = 0; i < body_count; i++) {
+        free_body(&bodies[i]);
     }
-    body->x[body->size] = x;
-    body->y[body->size] = y;
-    body->z[body->size] = z;
-    body->size++;
+    free(bodies);
 }
 
-// Find connected blocks using flood fill
-void find_connected_blocks(
+void add_toBody(Body* body, int x, int y, int z) {
+    if (body->size == body->capacity) {
+        body->capacity *= 2;
+        Point3D* new_points =
+            realloc(body->points, body->capacity * sizeof(Point3D));
+        if (new_points == NULL) {
+            printf("Memory reallocation body->points failed\n");
+            return;
+        }
+        body->points = new_points;
+    }
+    body->points[body->size++] = (Point3D){ x, y, z };
+}
+
+void flood_fill_body(
     char*** chunk, int width, int height, int depth, int x, int y, int z,
-    char block_type, bool*** visited, Body* body
+    char block_type, int*** visited, Body* body
 ) {
-    if (!is_within_bounds(x, y, z, width, height, depth) || visited[x][y][z]
+    if (!is_in_bounds(width, height, depth, x, y, z) || visited[x][y][z]
         || chunk[x][y][z] != block_type) {
         return;
     }
 
-    visited[x][y][z] = true;
-    add_to_body(body, x, y, z);
+    // Mark as visited and add to the current body
+    visited[x][y][z] = 1;
+    add_toBody(body, x, y, z);
 
-    // Check all 6 adjacent blocks
-    int dirs[6][3] = { { 1, 0, 0 },  { -1, 0, 0 }, { 0, 1, 0 },
+    // Explore all 6 neighbors
+    int base[6][3] = { { 1, 0, 0 },  { -1, 0, 0 }, { 0, 1, 0 },
                        { 0, -1, 0 }, { 0, 0, 1 },  { 0, 0, -1 } };
+
     for (int i = 0; i < 6; i++) {
-        find_connected_blocks(
-            chunk, width, height, depth, x + dirs[i][0], y + dirs[i][1],
-            z + dirs[i][2], block_type, visited, body
+        flood_fill_body(
+            chunk, width, height, depth, x + base[i][0], y + base[i][1],
+            z + base[i][2], block_type, visited, body
         );
     }
 }
 
-void move_body(
-    char*** chunk, int width, int height, int depth, int x, int y, int z
+Body* find_bodies(
+    char*** chunk, int width, int height, int depth, int* body_count
 ) {
-    if (!is_within_bounds(x, y, z, width, height, depth)
-        || chunk[x][y][z] == BLOCK_AIR) {
-        return;
+    // Allocate visited array
+    int*** visited = malloc(width * sizeof(int**));
+    if (visited == NULL) {
+        printf("Memory allocation visited failed\n");
+        return NULL;
     }
-
-    // Initialize visited array
-    bool*** visited = malloc(width * sizeof(bool**));
-    for (int i = 0; i < width; i++) {
-        visited[i] = malloc(height * sizeof(bool*));
-        for (int j = 0; j < height; j++) {
-            visited[i][j] = calloc(depth, sizeof(bool));
+    for (int x = 0; x < width; x++) {
+        visited[x] = malloc(height * sizeof(int*));
+        if (visited[x] == NULL) {
+            printf("Memory allocation visited[%d] failed\n", x);
+            for (int i = 0; i < x; i++)
+                free(visited[i]);
+            free(visited);
+            return NULL;
         }
-    }
-
-    // Find all blocks in this body
-    Body* body = create_body(16);
-    find_connected_blocks(
-        chunk, width, height, depth, x, y, z, chunk[x][y][z], visited, body
-    );
-
-    // Move body down until it hits something
-    bool can_move = true;
-    while (can_move) {
-        // Check if body can move down
-        for (int i = 0; i < body->size; i++) {
-            int bx = body->x[i];
-            int by = body->y[i];
-            int bz = body->z[i];
-            if (by == 0
-                || (chunk[bx][by - 1][bz] != BLOCK_AIR
-                    && !visited[bx][by - 1][bz])) {
-                can_move = false;
-                break;
-            }
-        }
-
-        // Move body down one step
-        if (can_move) {
-            for (int i = 0; i < body->size; i++) {
-                int bx = body->x[i];
-                int by = body->y[i];
-                int bz = body->z[i];
-                chunk[bx][by - 1][bz] = chunk[bx][by][bz];
-                chunk[bx][by][bz] = BLOCK_AIR;
-                body->y[i]--;
+        for (int y = 0; y < height; y++) {
+            visited[x][y] = calloc(depth, sizeof(int));
+            if (visited[x][y] == NULL) {
+                printf("Memory allocation visited[%d][%d] failed\n", x, y);
+                for (int i = 0; i < y; i++)
+                    free(visited[x][i]);
+                free(visited[x]);
+                for (int i = 0; i < x; i++)
+                    free(visited[i]);
+                free(visited);
+                return NULL;
             }
         }
     }
 
-    // Cleanup
-    for (int i = 0; i < width; i++) {
-        for (int j = 0; j < height; j++) {
-            free(visited[i][j]);
+    Body* bodies = NULL;
+    *body_count = 0;
+    int capacity = 10;
+
+    bodies = malloc(capacity * sizeof(Body));
+    if (bodies == NULL) {
+        printf("Initial memory allocation for bodies failed\n");
+        return NULL;
+    }
+
+    // Flood-fill to find all bodies
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            for (int z = 0; z < depth; z++) {
+                if (!visited[x][y][z] && chunk[x][y][z] != BLOCK_AIR) {
+                    if (*body_count == capacity) {
+                        capacity *= 2;
+                        Body* temp = realloc(bodies, capacity * sizeof(Body));
+                        if (temp == NULL) {
+                            printf("Memory reallocation for bodies failed\n");
+                            return NULL;
+                        }
+                        bodies = temp;
+                    }
+
+                    bodies[*body_count] = *create_body();
+                    flood_fill_body(
+                        chunk, width, height, depth, x, y, z, chunk[x][y][z],
+                        visited, &bodies[*body_count]
+                    );
+                    (*body_count)++;
+                }
+            }
         }
-        free(visited[i]);
+    }
+
+    // Cleanup visited array
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            free(visited[x][y]);
+        }
+        free(visited[x]);
     }
     free(visited);
-    free(body->x);
-    free(body->y);
-    free(body->z);
-    free(body);
+
+    return bodies;
+}
+
+bool body_is_fallable(Body body, char*** chunk) {
+    for (int i = 0; i < body.size; i++) {
+        Point3D point = (body.points)[i];
+        if (point.y == 0) {
+            return false;
+        }
+
+        if (chunk[point.x][point.y - 1][point.z] == BLOCK_AIR) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void copy_chunk(char*** src, char*** dest, int width, int height, int depth) {
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            for (int z = 0; z < depth; z++) {
+                dest[x][y][z] = src[x][y][z];
+            }
+        }
+    }
+}
+
+void move_body(
+    Body body, char*** new_chunk, char*** chunk, int width, int height,
+    int depth, int down_by
+) {
+    for (int i = 0; i < body.size; i++) {
+        Point3D point = body.points[i];
+        if (!is_in_bounds(
+                width, height, depth, point.x, point.y - down_by, point.z
+            )
+            || !is_in_bounds(width, height, depth, point.x, point.y, point.z)) {
+            continue;
+        }
+        // printf("Moving point %d %d %d\n", point.x, point.y, point.z);
+        new_chunk[point.x][point.y - down_by][point.z] =
+            chunk[point.x][point.y][point.z];
+
+        chunk[point.x][point.y][point.z] = BLOCK_AIR;
+    }
 }
 
 char*** chunk_apply_gravity(
     char*** chunk, int width, int height, int depth, int* new_height
 ) {
-    move_body(chunk, width, height, depth, 0, height, 0);
+    char*** new_chunk = calloc_chunk(width, height, depth);
+    if (new_chunk == NULL) {
+        printf("Memory allocation new_chunk failed\n");
+        return NULL;
+    }
 
-    // char*** new_chunk = calloc_chunk(width, height, depth);
+    bool flag = true;
+    while (flag) {
+        int body_count = 0;
+        Body* bodies = find_bodies(chunk, width, height, depth, &body_count);
 
-    // for (int x = 0; x < width; x++) {
-    //     for (int z = 0; z < depth; z++) {
-    //         int empty_y = 0;
-    //         for (int y = 0; y < height; y++) {
-    //             if (chunk[x][y][z] != BLOCK_AIR) {
-    //                 if (empty_y != y) {
-    //                     new_chunk[x][empty_y][z] = chunk[x][y][z];
-    //                 }
-    //                 empty_y++;
-    //             }
-    //         }
-    //     }
-    // }
+        for (int i = 0; i < body_count; i++) {
+            bodies[i].fallable = body_is_fallable(bodies[i], chunk);
+            // printf("Body %d is fallable: %d\n", i, bodies[i].fallable);
+        }
 
-    // *new_height = 0;
-    // for (int y = height - 1; y >= 0; y--) {
-    //     int is_empty = 1;
-    //     for (int x = 0; x < width && is_empty; x++) {
-    //         for (int z = 0; z < depth && is_empty; z++) {
-    //             if (new_chunk[x][y][z] != 0) {
-    //                 is_empty = 0;
-    //             }
-    //         }
-    //     }
-    //     if (!is_empty) {
-    //         *new_height = y + 1;
-    //         break;
-    //     }
-    // }
+        for (int i = 0; i < body_count; i++) {
+            if (bodies[i].fallable) {
+                move_body(bodies[i], new_chunk, chunk, width, height, depth, 1);
+            } else {
+                move_body(bodies[i], new_chunk, chunk, width, height, depth, 0);
+            }
+        }
 
-    // char*** final_chunk = calloc_chunk(width, *new_height, depth);
-    // for (int x = 0; x < width; x++) {
-    //     for (int y = 0; y < *new_height; y++) {
-    //         for (int z = 0; z < depth; z++) {
-    //             final_chunk[x][y][z] = new_chunk[x][y][z];
-    //         }
-    //     }
-    // }
+        copy_chunk(new_chunk, chunk, width, height, depth);
 
-    // free_chunk(new_chunk, width, height, depth);
-    // free_chunk(chunk, width, height, depth);
+        flag = false;
+        for (int i = 0; i < body_count; i++) {
+            if (bodies[i].fallable) {
+                flag = true;
+                break;
+            }
+        }
 
-    return final_chunk;
+        free_body_array(bodies, body_count);
+    }
+
+    free_chunk(chunk, width, height);
+
+    return new_chunk;
 }

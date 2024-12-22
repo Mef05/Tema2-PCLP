@@ -5,6 +5,8 @@ EXE = main
 
 all: run clean
 
+val: debug clean
+
 run: build 
 	@echo "Running"
 	@./$(EXE)
@@ -22,4 +24,8 @@ view: build
 	@echo "Running"
 	@./$(EXE) > output.txt
 	@echo "Building .txt"
-	@rm -f $(EXE) *~
+	# @rm -f $(EXE) *~
+
+debug: build
+	@echo "Running Valgrind"
+	@valgrind --tool=memcheck --leak-check=full --error-exitcode=1 ./$(EXE)

@@ -68,14 +68,3 @@ char*** chunk_fill_sphere(
 
     return chunk;
 }
-
-unsigned char*
-    chunk_encode(char*** chunk, int width, int height, int depth, int* length) {
-    unsigned char* code = malloc(width * height * depth * sizeof *code);
-    return code;
-}
-
-char*** chunk_decode(unsigned char* code, int width, int height, int depth) {
-    char*** chunk = malloc(width * sizeof *chunk);
-    return chunk;
-}
